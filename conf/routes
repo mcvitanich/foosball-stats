@@ -4,6 +4,17 @@
 
 # Home page
 GET     /                           controllers.Application.index()
+GET     /ping                       controllers.Application.ping()
+
+# Player
+POST    /player                     @controllers.Players.create()
+GET     /player                     @controllers.Players.getAll()
+GET     /player/search              @controllers.Players.search(name: String)
+GET     /player/:id                 @controllers.Players.get(id: Long)
+PUT     /player/:id                 @controllers.Players.update(id: Long)
+DELETE  /player/:id                 @controllers.Players.delete(id: Long)
+
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
