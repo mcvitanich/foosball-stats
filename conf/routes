@@ -5,6 +5,10 @@
 # Home page
 GET     /                           controllers.Application.index()
 GET     /ping                       controllers.Application.ping()
+GET     /test                       controllers.Application.test()
+GET     /test2                       controllers.Application.test2()
+
+
 
 # Player
 POST    /player                     @controllers.Players.create()
@@ -15,6 +19,14 @@ PUT     /player/:id                 @controllers.Players.update(id: Long)
 DELETE  /player/:id                 @controllers.Players.delete(id: Long)
 
 
+
+# TEAM
+POST    /team                     @controllers.Teams.create()
+GET     /team                     @controllers.Teams.getAll()
+#GET     /team/search              @controllers.Teams.search(name: String)
+GET     /team/:id                 @controllers.Teams.get(id: Long)
+PUT     /team/:id                 @controllers.Teams.update(id: Long)
+DELETE  /team/:id                 @controllers.Teams.delete(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

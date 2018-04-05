@@ -111,7 +111,6 @@ public class PlayerService {
         return promise;
     }
 
-
     public Promise<Boolean> deletePlayer(Long id) {
         Promise<Player> playerPromise = this.getPlayer(id);
         return playerPromise.map(new F.Function<Player, Boolean>() {
@@ -131,15 +130,7 @@ public class PlayerService {
     public Promise<List<Player>> getAllPlayers() {
         return promise(() -> withTransaction("default", true, () -> {
             try {
-                List<Player> resultList = new ArrayList<>();
-                Iterator rows = JPA.em().createNativeQuery(GET_ALL_PLAYERS).getResultList().iterator();
-                if (!rows.hasNext()) {
-                    return null;
-                }
-                while (rows.hasNext()) {
-                    resultList.add(Player.buildFromIterator((Object[]) rows.next()));
-                }
-                return resultList;
+                return JPA.em().createQuery("SELECT p from Player p").getResultList();
             } catch (Exception e) {
                 Logger.error("Error trying to access database", e);
                 throw e;

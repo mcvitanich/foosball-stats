@@ -7,48 +7,48 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
-@Getter
-@Setter
+
 @Entity
+@Setter
+@Getter
 @NoArgsConstructor
-@Table(name = "PLAYER")
+@Table(name = "TEAM")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Player {
+public class Team {
 
     @Id
-    @Column(name = "PLAYER_ID", precision = 12, columnDefinition = "INT UNSIGNED")
+    @Column(name = "TEAM_ID", precision = 12, columnDefinition = "INT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "NAME", length = 50)
     private String name;
 
-//    @ManyToOne
-//    @JoinColumn(name="TEAM_ID", nullable=false)
-//    private Team team;
+//    @OneToMany(mappedBy="team")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "TEAM_ID")
+    private List<Player> players = new ArrayList<>();
 
-//    public Player(Team t) {
-//        this.team = t;
-//    }
-
-    public Player(long id, String name) {
+    public Team(long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static Player buildFromIterator(Object[] row) {
-        Player player = new Player();
+    public static Team buildFromIterator(Object[] row) {
+        Team campaign = new Team();
 
         Long id = getLong(row, FIELDS.PLAYER_ID);
         String name = get(row, FIELDS.NAME);
 
-        player.setId(id);
-        player.setName(name);
+        campaign.setId(id);
+        campaign.setName(name);
 
-        return player;
+        return campaign;
     }
 
 
