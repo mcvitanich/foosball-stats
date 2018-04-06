@@ -6,7 +6,9 @@
 GET     /                           controllers.Application.index()
 GET     /ping                       controllers.Application.ping()
 GET     /test                       controllers.Application.test()
-GET     /test2                       controllers.Application.test2()
+GET     /test2                      controllers.Application.test2()
+GET     /test3                      controllers.Application.test3()
+GET     /test4                      controllers.Application.test4()
 
 
 
