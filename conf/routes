@@ -25,7 +25,7 @@ DELETE  /player/:id                 @controllers.Players.delete(id: Long)
 # TEAM
 POST    /team                     @controllers.Teams.create()
 GET     /team                     @controllers.Teams.getAll()
-#GET     /team/search              @controllers.Teams.search(name: String)
+GET     /team/search              @controllers.Teams.search(name: String)
 GET     /team/:id                 @controllers.Teams.get(id: Long)
 PUT     /team/:id                 @controllers.Teams.update(id: Long)
 DELETE  /team/:id                 @controllers.Teams.delete(id: Long)

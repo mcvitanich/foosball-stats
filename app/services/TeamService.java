@@ -10,6 +10,11 @@ import play.libs.F;
 import play.libs.F.Promise;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -54,25 +59,27 @@ public class TeamService {
 
     }
 
-//    public Promise<List<Player>> search(final String name) {
-//        return promise(() -> withTransaction("default", true, () -> {
-//            try {
-//                List<Player> resultList = new ArrayList<>();
-//                String query = format(GET_PLAYER_BY_NAME_QUERY, name.toLowerCase());
-//                Iterator rows = JPA.em().createNativeQuery(query).getResultList().iterator();
-//                if (!rows.hasNext()) {
-//                    return null;
-//                }
-//                while (rows.hasNext()) {
-//                     resultList.add(Player.buildFromIterator((Object[]) rows.next()));
-//                }
-//                return resultList;
-//            } catch (Exception e) {
-//                Logger.error("Error trying to access database", e);
-//                throw e;
-//            }
-//        }));
-//    }
+    public Promise<List<Team>> search(final String name) {
+        return promise(() -> withTransaction("default", true, () -> {
+            try {
+                EntityManager em = JPA.em();
+                CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+                CriteriaQuery criteriaQuery = criteriaBuilder.createQuery(Team.class);
+
+                Root teamRoot = criteriaQuery.from(Team.class);
+
+                criteriaQuery.select(teamRoot).where(criteriaBuilder.like(teamRoot.get("name"), "%"+name+"%"));
+
+                TypedQuery<Team> qry = em.createQuery(criteriaQuery);
+
+                List<Team> result = qry.getResultList();
+                return result;
+            } catch (Exception e) {
+                Logger.error("Error trying to access database", e);
+                throw e;
+            }
+        }));
+    }
 
     public Promise<Team> update(final Long id, final String name, final Player player1, final Player player2) {
         Promise<Team> promise = promise(() -> withTransaction(() -> {

@@ -30,16 +30,16 @@ public class Application extends Controller {
                 public Void apply() throws Throwable {
 
                     Player p1 = new Player();
-                    p1.setName("Jugador1");
+                    p1.setName("Fran");
 
                     Player p2 = new Player();
-                    p2.setName("Jugador2");
+                    p2.setName("Gonza");
 
                     Player p3 = new Player();
-                    p1.setName("Jugador3");
+                    p3.setName("Nico");
 
                     Player p4 = new Player();
-                    p2.setName("Jugador4");
+                    p4.setName("Ruben");
 
                     JPA.em().merge(p1);
                     JPA.em().merge(p2);
@@ -67,9 +67,7 @@ public class Application extends Controller {
                     Player p1 = JPA.em().find(Player.class, new Long(1));
                     Player p2 = JPA.em().find(Player.class, new Long(2));
 
-                    // MATCH
                     Team t1 = new Team();
-
                     t1.addPlayer(p1);
                     t1.addPlayer(p2);
 
@@ -86,13 +84,42 @@ public class Application extends Controller {
                     Player p3 = JPA.em().find(Player.class, new Long(3));
                     Player p4 = JPA.em().find(Player.class, new Long(4));
 
-                    // MATCH
                     Team t2 = new Team();
-
                     t2.addPlayer(p3);
                     t2.addPlayer(p4);
-
                     JPA.em().persist(t2);
+
+                    return null;
+                }
+            });
+
+            JPA.withTransaction(new F.Function0<Void>() {
+                @Override
+                public Void apply() throws Throwable {
+
+                    Player p1 = JPA.em().find(Player.class, new Long(1));
+                    Player p4 = JPA.em().find(Player.class, new Long(4));
+
+                    Team t3 = new Team();
+                    t3.addPlayer(p1);
+                    t3.addPlayer(p4);
+                    JPA.em().persist(t3);
+
+                    return null;
+                }
+            });
+
+            JPA.withTransaction(new F.Function0<Void>() {
+                @Override
+                public Void apply() throws Throwable {
+
+                    Player p2 = JPA.em().find(Player.class, new Long(2));
+                    Player p3 = JPA.em().find(Player.class, new Long(3));
+
+                    Team t4 = new Team();
+                    t4.addPlayer(p2);
+                    t4.addPlayer(p3);
+                    JPA.em().persist(t4);
 
                     return null;
                 }
@@ -118,11 +145,8 @@ public class Application extends Controller {
                     // MATCH
                     Match m1 = new Match();
                     m1.setStartDate(new Date());
-//                    m1.setId(1L);
-
                     m1.addTeam(t1);
                     m1.addTeam(t2);
-
                     JPA.em().persist(m1);
 
                     return null;

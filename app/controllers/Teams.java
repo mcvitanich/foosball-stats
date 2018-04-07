@@ -93,18 +93,18 @@ public class Teams extends play.mvc.Controller {
         return Promise.pure(internalServerError());
     }
 
-//    public Promise<Result> search(final String name) {
-//        Promise<List<Player>> playersPromise = teamsService.search(name);
-//        return playersPromise.map(new F.Function<List<Player>, Result>() {
-//            @Override
-//            public Result apply(List<Player> players) throws Throwable {
-//                if (players != null) {
-//                    return ok(Json.toJson(players));
-//                }
-//                return notFound();
-//            }
-//        });
-//    }
+    public Promise<Result> search(final String name) {
+        Promise<List<Team>> teamsPromise = teamsService.search(name);
+        return teamsPromise.map(new F.Function<List<Team>, Result>() {
+            @Override
+            public Result apply(List<Team> teams) throws Throwable {
+                if (teams != null) {
+                    return ok(Json.toJson(teams));
+                }
+                return notFound();
+            }
+        });
+    }
 
     public Promise<Result> update(final Long id) {
         JsonNode jsonNode = request().body().asJson();
