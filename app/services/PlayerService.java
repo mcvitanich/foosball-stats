@@ -56,7 +56,7 @@ public class PlayerService {
                 }
                 return null;
             } catch (Exception e) {
-                Logger.error("Error trying to access database", e);
+                Logger.error("Error trying to access database to get a player", e);
                 throw e;
             }
         }));
@@ -132,7 +132,7 @@ public class PlayerService {
             try {
                 return JPA.em().createQuery("SELECT p from Player p").getResultList();
             } catch (Exception e) {
-                Logger.error("Error trying to access database", e);
+                Logger.error("Error trying to access database to get all players", e);
                 throw e;
             }
         }));

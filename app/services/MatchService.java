@@ -1,55 +1,55 @@
 package services;
 
+import models.Match;
 import models.Player;
 import models.Team;
 import org.springframework.stereotype.Component;
 import play.Logger;
-import play.Play;
 import play.db.jpa.JPA;
 import play.libs.F;
 import play.libs.F.Promise;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.List;
 
-import static java.lang.String.format;
 import static play.Logger.error;
 import static play.db.jpa.JPA.withTransaction;
 import static play.libs.F.Promise.promise;
 
 @Component
-public class TeamService {
-
-    public Team create(String name, Player p1, Player p2) {
+public class MatchService {
+    
+    public Match createMatch(Team team1, Team team2) {
         try {
-            return JPA.withTransaction(new F.Function0<Team>() {
+            return JPA.withTransaction(new F.Function0<Match>() {
                 @Override
-                public Team apply() throws Throwable {
-                    Team team = new Team();
-                    team.setName(name);
-                    List<Player> players = new ArrayList<>();
-                    players.add(p1);
-                    players.add(p2);
-                    team.setPlayers(players);
-                    Team teamSaved = JPA.em().merge(team);
-                    return teamSaved;
+                public Match apply() throws Throwable {
+                    Match match = new Match();
+                    match.setStartDate(new Date());
+
+                    match.addTeam(team1);
+                    match.addTeam(team2);
+
+                    Match newMatch = JPA.em().merge(match);
+                    return newMatch;
                 }
             });
         } catch (Throwable e) {
-            error("An error ocurred when creating Team!");
+            error("An error ocurred when creating Match!", e);
+            error(e.toString());
         }
         return null;
     }
 
-    public Promise<Team> get(final Long id) {
+    public Promise<Match> getMatch(final Long id) {
         return promise(() -> withTransaction("default", true, () -> {
             try {
-                Team team = JPA.em().find(Team.class, id);
-                return team;
+                Match match = JPA.em().find(Match.class, id);
+                return match;
             } catch (Exception e) {
-                Logger.error("Error trying to access database to get a team", e);
+                Logger.error("Error trying to access database to get a match", e);
                 throw e;
             }
         }));
@@ -76,20 +76,18 @@ public class TeamService {
 //        }));
 //    }
 
-    public Promise<Team> update(final Long id, final String name, final Player player1, final Player player2) {
-        Promise<Team> promise = promise(() -> withTransaction(() -> {
+    public Promise<Match> updateMatch(final Long id, final Team team1, final Team team2) {
+        Promise<Match> promise = promise(() -> withTransaction(() -> {
             EntityManager em = JPA.em();
-            Team team = em.find(Team.class, id);
-            if (team != null) {
-                team.setName(name);
+            Match match = em.find(Match.class, id);
+            if (match != null) {
 
-                List<Player> players = new ArrayList<>();
-                players.add(player1);
-                players.add(player2);
-                team.setPlayers(players);
+                match.getMatchTeams().clear();
+                match.addTeam(team1);
+                match.addTeam(team2);
 
-                em.merge(team);
-                return team;
+                em.merge(match);
+                return match;
             } else {
                 return null;
             }
@@ -98,14 +96,14 @@ public class TeamService {
     }
 
 
-    public Promise<Boolean> delete(Long id) {
-        Promise<Team> teamPromise = this.get(id);
-        return teamPromise.map(new F.Function<Team, Boolean>() {
+    public Promise<Boolean> deleteMatch(Long id) {
+        Promise<Match> matchPromise = this.getMatch(id);
+        return matchPromise.map(new F.Function<Match, Boolean>() {
             @Override
-            public Boolean apply(Team team) throws Throwable {
-                if (team != null) {
+            public Boolean apply(Match match) throws Throwable {
+                if (match != null) {
                     return JPA.withTransaction("default", true, () -> {
-                        JPA.em().remove(team);
+                        JPA.em().remove(match);
                         return Boolean.TRUE;
                     });
                 }
@@ -114,12 +112,13 @@ public class TeamService {
         });
     }
 
-    public Promise<List<Team>> getAll() {
+    public Promise<List<Match>> getAllMatches() {
         return promise(() -> withTransaction("default", true, () -> {
             try {
-                return JPA.em().createQuery("SELECT t FROM Team t").getResultList();
+                List<Match> results = JPA.em().createQuery("SELECT m FROM Match m").getResultList();
+                return results;
             } catch (Exception e) {
-                Logger.error("Error trying to access database to get all teams", e);
+                Logger.error("Error trying to access database to get all matches", e);
                 throw e;
             }
         }));

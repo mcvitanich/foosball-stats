@@ -40,7 +40,6 @@ public class Teams extends play.mvc.Controller {
         });
     }
 
-    //    public Promise<Result> create() {
     public Promise<Result> create() {
         JsonNode jsonNode = request().body().asJson();
         String name = jsonNode.get("name").asText();
@@ -78,9 +77,8 @@ public class Teams extends play.mvc.Controller {
                         @Override
                         public Result apply(Team team) throws Throwable {
                             if (team != null) {
-
                                 return JPA.withTransaction((F.Function0<Result>) () -> {
-                                    return ok(toJson( team));
+                                    return ok(toJson(team));
                                 });
                             } else {
                                 return notFound();

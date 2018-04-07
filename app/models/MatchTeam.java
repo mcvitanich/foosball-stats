@@ -1,5 +1,7 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
@@ -8,9 +10,11 @@ import java.util.Objects;
 @Table(name = "MATCH_TEAM")
 public class MatchTeam implements java.io.Serializable {
 
+    @JsonIgnore
     @EmbeddedId
     private MatchTeamId id;
 
+    @JsonIgnore
     @ManyToOne
     @MapsId("matchId")
     private Match match;

@@ -33,7 +33,6 @@ public class Match {
     @Temporal(TemporalType.DATE)
     private Date endDate;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MatchTeam> matchTeams = new ArrayList<>();
 
