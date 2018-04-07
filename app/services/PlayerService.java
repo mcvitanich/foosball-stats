@@ -1,5 +1,6 @@
 package services;
 
+import models.Match;
 import models.Player;
 import org.springframework.stereotype.Component;
 import play.Logger;
@@ -46,34 +47,16 @@ public class PlayerService {
     }
 
 
-    public Promise<Player> getPlayer3(final Long id) {
-        return promise(() -> withTransaction("default", true, () -> {
-            try {
-                String query = format(GET_PLAYER_QUERY, id);
-                Iterator rows = JPA.em().createNativeQuery(query).getResultList().iterator();
-                if (rows.hasNext()) {
-                    return Player.buildFromIterator((Object[]) rows.next());
-                }
-                return null;
-            } catch (Exception e) {
-                Logger.error("Error trying to access database to get a player", e);
-                throw e;
-            }
-        }));
-
-    }
-
     public Promise<Player> getPlayer(final Long id) {
         return promise(() -> withTransaction("default", true, () -> {
             try {
                 Player player = JPA.em().find(Player.class, id);
                 return player;
             } catch (Exception e) {
-                Logger.error("Error trying to access database", e);
+                Logger.error("Error trying to access database to get a player", e);
                 throw e;
             }
         }));
-
     }
 
     public Promise<List<Player>> searchPlayer(final String name) {

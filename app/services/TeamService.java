@@ -29,10 +29,8 @@ public class TeamService {
                 public Team apply() throws Throwable {
                     Team team = new Team();
                     team.setName(name);
-                    List<Player> players = new ArrayList<>();
-                    players.add(p1);
-                    players.add(p2);
-                    team.setPlayers(players);
+                    team.addPlayer(p1);
+                    team.addPlayer(p2);
                     Team teamSaved = JPA.em().merge(team);
                     return teamSaved;
                 }
@@ -82,11 +80,9 @@ public class TeamService {
             Team team = em.find(Team.class, id);
             if (team != null) {
                 team.setName(name);
-
-                List<Player> players = new ArrayList<>();
-                players.add(player1);
-                players.add(player2);
-                team.setPlayers(players);
+                team.getTeamPlayers().clear();
+                team.addPlayer(player1);
+                team.addPlayer(player2);
 
                 em.merge(team);
                 return team;

@@ -1,11 +1,14 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,7 +20,7 @@ import javax.persistence.*;
 public class Player {
 
     @Id
-    @Column(name = "PLAYER_ID", precision = 12, columnDefinition = "INT UNSIGNED")
+    @Column(name = "ID", precision = 12, columnDefinition = "INT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -28,6 +31,10 @@ public class Player {
         this.id = id;
         this.name = name;
     }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TeamPlayer> teamPlayers = new ArrayList<>();
 
     public static Player buildFromIterator(Object[] row) {
         Player player = new Player();
@@ -53,4 +60,5 @@ public class Player {
     enum FIELDS {
         PLAYER_ID, NAME
     }
+
 }

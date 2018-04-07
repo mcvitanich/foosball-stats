@@ -29,13 +29,25 @@ public class Team  {
     @Column(name = "NAME", length = 50)
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "TEAM_ID")
-    private List<Player> players = new ArrayList<>();
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TeamPlayer> teamPlayers = new ArrayList<>();
 
     @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MatchTeam> matchTeams = new ArrayList<>();
+
+    public void addPlayer(Player player) {
+        if (this.name == null || this.name.length() == 0) {
+            this.name = player.getName();
+        } else {
+            this.name = this.name + "-" + player.getName();
+        }
+
+        TeamPlayer tp = new TeamPlayer(this, player);
+        teamPlayers.add(tp);
+        player.getTeamPlayers().add(tp);
+    }
 
 }
