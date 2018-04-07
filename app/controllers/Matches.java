@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import play.db.jpa.JPA;
 import play.libs.F;
 import play.libs.F.Promise;
+import play.libs.Json;
 import play.mvc.Result;
 import services.MatchService;
 import services.PlayerService;
@@ -92,18 +93,18 @@ public class Matches extends play.mvc.Controller {
         return Promise.pure(internalServerError());
     }
 
-//    public Promise<Result> search(final String name) {
-//        Promise<List<Player>> playersPromise = teamsService.search(name);
-//        return playersPromise.map(new F.Function<List<Player>, Result>() {
-//            @Override
-//            public Result apply(List<Player> players) throws Throwable {
-//                if (players != null) {
-//                    return ok(Json.toJson(players));
-//                }
-//                return notFound();
-//            }
-//        });
-//    }
+    public Promise<Result> search(final Long teamId) {
+        Promise<List<Match>> matchesPromise = matchService.search(teamId);
+        return matchesPromise.map(new F.Function<List<Match>, Result>() {
+            @Override
+            public Result apply(List<Match> matches) throws Throwable {
+                if (matches != null) {
+                    return ok(Json.toJson(matches));
+                }
+                return notFound();
+            }
+        });
+    }
 
     public Promise<Result> update(final Long id) {
         JsonNode jsonNode = request().body().asJson();

@@ -34,7 +34,7 @@ DELETE  /team/:id                 @controllers.Teams.delete(id: Long)
 # MATCH
 POST    /match                     @controllers.Matches.create()
 GET     /match                     @controllers.Matches.getAll()
-#GET     /match/search              @controllers.Matches.search(name: String)
+GET     /match/search              @controllers.Matches.search(teamId: Long)
 GET     /match/:id                 @controllers.Matches.get(id: Long)
 PUT     /match/:id                 @controllers.Matches.update(id: Long)
 DELETE  /match/:id                 @controllers.Matches.delete(id: Long)

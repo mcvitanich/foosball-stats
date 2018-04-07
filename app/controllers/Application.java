@@ -153,6 +153,25 @@ public class Application extends Controller {
                 }
             });
 
+            JPA.withTransaction(new F.Function0<Void>() {
+                @Override
+                public Void apply() throws Throwable {
+
+                    Team t3 = JPA.em().find(Team.class, new Long(3));
+                    Team t4 = JPA.em().find(Team.class, new Long(4));
+
+                    // MATCH
+                    Match m2 = new Match();
+                    m2.setStartDate(new Date());
+                    m2.addTeam(t3);
+                    m2.addTeam(t4);
+                    JPA.em().persist(m2);
+
+                    return null;
+                }
+            });
+
+
         } catch (Throwable throwable) {
             throwable.printStackTrace();
             return internalServerError();

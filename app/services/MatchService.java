@@ -56,25 +56,16 @@ public class MatchService {
 
     }
 
-//    public Promise<List<Player>> search(final String name) {
-//        return promise(() -> withTransaction("default", true, () -> {
-//            try {
-//                List<Player> resultList = new ArrayList<>();
-//                String query = format(GET_PLAYER_BY_NAME_QUERY, name.toLowerCase());
-//                Iterator rows = JPA.em().createNativeQuery(query).getResultList().iterator();
-//                if (!rows.hasNext()) {
-//                    return null;
-//                }
-//                while (rows.hasNext()) {
-//                     resultList.add(Player.buildFromIterator((Object[]) rows.next()));
-//                }
-//                return resultList;
-//            } catch (Exception e) {
-//                Logger.error("Error trying to access database", e);
-//                throw e;
-//            }
-//        }));
-//    }
+    public Promise<List<Match>> search(Long teamId) {
+        return promise(() -> withTransaction("default", true, () -> {
+            try {
+                return JPA.em().createQuery("SELECT m from Match m join m.matchTeams mt where mt.id.teamId="+teamId).getResultList();
+            } catch (Exception e) {
+                Logger.error("Error trying to access database to search matches", e);
+                throw e;
+            }
+        }));
+    }
 
     public Promise<Match> updateMatch(final Long id, final Team team1, final Team team2) {
         Promise<Match> promise = promise(() -> withTransaction(() -> {
